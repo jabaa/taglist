@@ -1,0 +1,8 @@
+{
+  "name": "taglist",
+  "version": "0.0.0",
+  "workspaces": [
+    "client",
+    "server"
+  ]
+}

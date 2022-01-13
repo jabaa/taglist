@@ -1,0 +1,5 @@
+<ng-container *ngIf="tags$ | async as tags">
+  <ul>
+    <li *ngFor="let tag of tags">{{ tag }}</li>
+  </ul>
+</ng-container>
