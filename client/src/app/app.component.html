@@ -1,5 +1,36 @@
+<mat-form-field>
+  <input
+    matInput
+    placeholder="Tag"
+    [(ngModel)]="tag"
+    (keyup.enter)="onEnterTag()"
+  />
+</mat-form-field>
 <ng-container *ngIf="tags$ | async as tags">
   <ul>
-    <li *ngFor="let tag of tags">{{ tag }}</li>
+    <li *ngFor="let tag of tags">
+      {{ tag.name }}
+      <button mat-icon-button (click)="onDeleteTag(tag)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </li>
+  </ul>
+</ng-container>
+<mat-form-field>
+  <input
+    matInput
+    placeholder="Item"
+    [(ngModel)]="item"
+    (keyup.enter)="onEnterItem()"
+  />
+</mat-form-field>
+<ng-container *ngIf="items$ | async as items">
+  <ul>
+    <li *ngFor="let item of items">
+      {{ item.name }}
+      <button mat-icon-button (click)="onDeleteItem(item)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </li>
   </ul>
 </ng-container>
