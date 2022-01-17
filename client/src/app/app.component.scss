@@ -1,0 +1,11 @@
+div.container {
+  height: 100%;
+  margin: 0 auto;
+  max-width: 1128px;
+  padding: 10px;
+  div {
+    border: 1px solid darkgray;
+    border-radius: 20px;
+    padding: 10px;
+  }
+}

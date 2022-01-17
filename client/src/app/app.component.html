@@ -1,36 +1,40 @@
-<mat-form-field>
-  <input
-    matInput
-    placeholder="Tag"
-    [(ngModel)]="tag"
-    (keyup.enter)="onEnterTag()"
-  />
-</mat-form-field>
-<ng-container *ngIf="tags$ | async as tags">
-  <ul>
-    <li *ngFor="let tag of tags">
-      {{ tag.name }}
-      <button mat-icon-button (click)="onDeleteTag(tag)">
-        <mat-icon>delete</mat-icon>
+<div class="container" fxLayout="row" fxLayoutGap="10px">
+  <div fxFlex="0 1 auto">
+    <mat-form-field>
+      <mat-label>New Tag</mat-label>
+      <input matInput [(ngModel)]="newTag" (keyup.enter)="onEnterTag()" />
+      <button mat-icon-button matSuffix (click)="onEnterTag()">
+        <mat-icon>add_circle</mat-icon>
       </button>
-    </li>
-  </ul>
-</ng-container>
-<mat-form-field>
-  <input
-    matInput
-    placeholder="Item"
-    [(ngModel)]="item"
-    (keyup.enter)="onEnterItem()"
-  />
-</mat-form-field>
-<ng-container *ngIf="items$ | async as items">
-  <ul>
-    <li *ngFor="let item of items">
-      {{ item.name }}
-      <button mat-icon-button (click)="onDeleteItem(item)">
-        <mat-icon>delete</mat-icon>
+    </mat-form-field>
+    <ng-container *ngIf="tags$ | async as tags">
+      <ul>
+        <li *ngFor="let tag of tags">
+          {{ tag.name }}
+          <button mat-icon-button (click)="onDeleteTag(tag)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+  <div fxFlex="1 1 auto">
+    <mat-form-field>
+      <mat-label>New Item</mat-label>
+      <input matInput [(ngModel)]="newItem" (keyup.enter)="onEnterItem()" />
+      <button mat-icon-button matSuffix (click)="onEnterItem()">
+        <mat-icon>add_circle</mat-icon>
       </button>
-    </li>
-  </ul>
-</ng-container>
+    </mat-form-field>
+    <ng-container *ngIf="items$ | async as items">
+      <ul>
+        <li *ngFor="let item of items">
+          {{ item.name }}
+          <button mat-icon-button (click)="onDeleteItem(item)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+</div>

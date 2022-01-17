@@ -1,31 +1,31 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Item, ItemSchema } from './item.schema';
-import { Tag, TagSchema } from './tag.schema';
+import { Item } from './item.entity';
+import { Tag } from './tag.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    MongooseModule.forRootAsync({
+    TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        return {
-          uri: configService.get('MONGODB_URI'),
-          user: configService.get('MONGODB_USER'),
-          pass: configService.get('MONGODB_PASS')
-        };
-      }
+      useFactory: (config: ConfigService) => ({
+        type: 'mysql',
+        host: config.get('DB_HOST'),
+        port: config.get('DB_PORT'),
+        username: config.get('DB_USERNAME'),
+        password: config.get('DB_PASSWORD'),
+        database: config.get('DB_DATABASE'),
+        autoLoadEntities: true,
+        synchronize: true
+      })
     }),
-    MongooseModule.forFeature([
-      { name: Tag.name, schema: TagSchema },
-      { name: Item.name, schema: ItemSchema }
-    ])
+    TypeOrmModule.forFeature([Item, Tag])
   ],
-  controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService],
+  controllers: [AppController]
 })
 export class AppModule {}

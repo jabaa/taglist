@@ -1,40 +1,49 @@
-import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Item } from './item';
+import { ItemService } from './item.service';
 import { Tag } from './tag';
+import { TagService } from './tag.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  tag = '';
-  tags$ = this.http.get<Tag[]>('/api/tags');
-  item = '';
-  items$ = this.http.get<Item[]>('/api/items');
+export class AppComponent implements OnInit {
+  newTag = '';
+  tags$ = this.tagService.entities$;
+  newItem = '';
+  items$ = this.itemService.entities$;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private itemService: ItemService,
+    private tagService: TagService
+  ) {}
 
-  onEnterTag() {
-    this.http.post('/api/tag', { name: this.tag }).subscribe();
-    this.tag = '';
-    this.tags$ = this.http.get<Tag[]>('/api/tags');
+  ngOnInit(): void {
+    this.itemService.getAll();
+    this.tagService.getAll();
   }
 
-  onEnterItem() {
-    this.http.post('/api/item', { name: this.item }).subscribe();
-    this.item = '';
-    this.items$ = this.http.get<Item[]>('/api/items');
+  onEnterTag(): void {
+    if (!this.newTag) {
+      return;
+    }
+    this.tagService.add({ name: this.newTag });
   }
 
-  onDeleteTag(tag: Tag) {
-    this.http.delete(`/api/tag/${tag._id}`).subscribe();
-    this.tags$ = this.http.get<Tag[]>('/api/tags');
+  onEnterItem(): void {
+    if (!this.newItem) {
+      return;
+    }
+    this.itemService.add({ name: this.newTag, tags: [] });
   }
 
-  onDeleteItem(item: Item) {
-    this.http.delete(`/api/item/${item._id}`).subscribe();
-    this.items$ = this.http.get<Item[]>('/api/items');
+  onDeleteTag(tag: Tag): void {
+    this.tagService.delete(tag.id);
+  }
+
+  onDeleteItem(item: Item): void {
+    this.itemService.delete(item.id);
   }
 }

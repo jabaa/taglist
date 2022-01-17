@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
 import { AppService } from './app.service';
-import { Item } from './item.schema';
-import { Tag } from './tag.schema';
+import { CreateItemDto, Item } from './item.entity';
+import { CreateTagDto, Tag } from './tag.entity';
 
 @Controller('api')
 export class AppController {
@@ -14,13 +14,13 @@ export class AppController {
   }
 
   @Post('tag')
-  postTag(@Body() tag: Tag): Promise<Tag> {
-    return this.appService.postTag(tag);
+  async postTag(@Body() tag: CreateTagDto): Promise<Tag> {
+    return this.appService.createTag(tag);
   }
 
   @Delete('tag/:id')
-  deleteTag(@Param() { id }: { id: string }): Promise<Tag | null> {
-    return this.appService.deleteTag(id);
+  deleteTag(@Param() { id }: { id: string }): void {
+    this.appService.deleteTag(+id);
   }
 
   @Get('items')
@@ -29,12 +29,12 @@ export class AppController {
   }
 
   @Post('item')
-  postItem(@Body() item: Item): Promise<Item> {
-    return this.appService.postItem(item);
+  postItem(@Body() item: CreateItemDto): Promise<Item> {
+    return this.appService.createItem(item);
   }
 
   @Delete('item/:id')
-  deleteItem(@Param() { id }: { id: string }): Promise<Item | null> {
-    return this.appService.deleteItem(id);
+  deleteItem(@Param() { id }: { id: string }): void {
+    this.appService.deleteItem(+id);
   }
 }

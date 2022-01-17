@@ -1,10 +1,12 @@
 version: '3.1'
 services:
-  mongo:
-    image: mongo
+  mysql:
+    image: mysql
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: dev
-      MONGO_INITDB_ROOT_PASSWORD: dev
+      MYSQL_ROOT_PASSWORD: dev
+      MYSQL_DATABASE: taglist
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev
     ports:
-      - "27017:27017"
+      - "3306:3306"

@@ -1,37 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Item, ItemDocument } from './item.schema';
-import { Tag, TagDocument } from './tag.schema';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, Repository } from 'typeorm';
+import { CreateItemDto, Item } from './item.entity';
+import { CreateTagDto, Tag } from './tag.entity';
 
 @Injectable()
 export class AppService {
   constructor(
-    @InjectModel(Tag.name) private tagModel: Model<TagDocument>,
-    @InjectModel(Item.name) private itemModel: Model<ItemDocument>
+    @InjectRepository(Tag) private tagRepository: Repository<Tag>,
+    @InjectRepository(Item) private itemRepository: Repository<Item>
   ) {}
 
   getTags(): Promise<Tag[]> {
-    return this.tagModel.find().exec();
+    return this.tagRepository.find();
   }
 
-  postTag(tag: Tag): Promise<Tag> {
-    return new this.tagModel(tag).save();
+  async createTag(tag: CreateTagDto): Promise<Tag> {
+    const id = (await this.tagRepository.insert(tag)).identifiers[0].id;
+    return { ...tag, id };
   }
 
-  deleteTag(tagId: string): Promise<Tag | null> {
-    return this.tagModel.findByIdAndDelete(tagId).exec();
+  deleteTag(tagId: number): Promise<DeleteResult> {
+    return this.tagRepository.delete(tagId);
   }
 
-  getItems(): Promise<Tag[]> {
-    return this.itemModel.find().exec();
+  getItems(): Promise<Item[]> {
+    return this.itemRepository.find();
   }
 
-  postItem(item: Item): Promise<Item> {
-    return new this.itemModel(item).save();
+  async createItem(item: CreateItemDto): Promise<Item> {
+    const id = (await this.itemRepository.insert(item)).identifiers[0].id;
+    return { ...item, id };
   }
 
-  deleteItem(itemId: string): Promise<Item | null> {
-    return this.itemModel.findByIdAndDelete(itemId).exec();
+  deleteItem(itemId: number): Promise<DeleteResult> {
+    return this.itemRepository.delete(itemId);
   }
 }

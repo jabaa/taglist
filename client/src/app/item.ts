@@ -1,5 +1,7 @@
-import { Document } from './document';
+import { Tag } from './tag';
 
-export interface Item extends Document {
+export interface Item {
+  id?: any;
   name: string;
+  tags: Tag[];
 }
