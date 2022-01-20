@@ -1,14 +1,25 @@
+import { resolve } from 'path';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ApiController } from './api.controller';
+import { ApiService } from './api.service';
 import { Item } from './item.entity';
 import { Tag } from './tag.entity';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    ServeStaticModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => [
+        {
+          rootPath: resolve(config.get('CLIENT_PATH') ?? '')
+        }
+      ]
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -25,7 +36,7 @@ import { Tag } from './tag.entity';
     }),
     TypeOrmModule.forFeature([Item, Tag])
   ],
-  providers: [AppService],
-  controllers: [AppController]
+  providers: [ApiService],
+  controllers: [ApiController]
 })
 export class AppModule {}

@@ -9,3 +9,24 @@ div.container {
     padding: 10px;
   }
 }
+
+mat-list-item {
+  cursor: pointer;
+  &.active {
+    background-color: rgba(0, 0, 0, 0.2);
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+  }
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+mat-list {
+  overflow: auto;
+}
+
+:host ::ng-deep mat-list-item > div {
+  width: 100%;
+}

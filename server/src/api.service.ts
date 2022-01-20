@@ -5,19 +5,22 @@ import { CreateItemDto, Item } from './item.entity';
 import { CreateTagDto, Tag } from './tag.entity';
 
 @Injectable()
-export class AppService {
+export class ApiService {
   constructor(
     @InjectRepository(Tag) private tagRepository: Repository<Tag>,
     @InjectRepository(Item) private itemRepository: Repository<Item>
   ) {}
 
-  getTags(): Promise<Tag[]> {
+  async createTag(tag: CreateTagDto): Promise<Tag> {
+    return this.tagRepository.save(tag);
+  }
+
+  readTags(): Promise<Tag[]> {
     return this.tagRepository.find();
   }
 
-  async createTag(tag: CreateTagDto): Promise<Tag> {
-    const id = (await this.tagRepository.insert(tag)).identifiers[0].id;
-    return { ...tag, id };
+  async updateTag(tag: Tag): Promise<Tag> {
+    return this.tagRepository.save(tag);
   }
 
   deleteTag(tagId: number): Promise<DeleteResult> {
@@ -25,15 +28,15 @@ export class AppService {
   }
 
   getItems(): Promise<Item[]> {
-    return this.itemRepository.find();
+    return this.itemRepository.find({ relations: ['tags'] });
   }
 
-  async createItem(item: CreateItemDto): Promise<Item> {
-    const id = (await this.itemRepository.insert(item)).identifiers[0].id;
-    return { ...item, id };
+  createItem(item: CreateItemDto): Promise<Item> {
+    return this.itemRepository.save(item);
   }
 
-  deleteItem(itemId: number): Promise<DeleteResult> {
-    return this.itemRepository.delete(itemId);
+  async deleteItem(itemId: number): Promise<number | null> {
+    const result = await this.itemRepository.delete(itemId);
+    return result.affected ? itemId : null;
   }
 }
