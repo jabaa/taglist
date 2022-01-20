@@ -10,3 +10,14 @@ services:
       MYSQL_PASSWORD: dev
     ports:
       - "3306:3306"
+  server:
+    build: .
+    restart: always
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: taglist
+      DB_USERNAME: dev
+      DB_PASSWORD: dev
+    ports:
+      - "3000:3000"
