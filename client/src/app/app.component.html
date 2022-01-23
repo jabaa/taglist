@@ -42,14 +42,19 @@
       </mat-chip-list>
       <mat-list fxFlex="1 1 auto">
         <mat-divider></mat-divider>
-        <mat-list-item *ngFor="let item of items" fxLayout="row">
+        <mat-list-item
+          *ngFor="let item of items"
+          fxLayout="row"
+          (click)="onShowItem(item)"
+        >
+          <mat-divider></mat-divider>
           <span fxFlex="1 1 auto">{{ item.name }}</span>
           <button
             fxFlex="0 1 auto"
             mat-icon-button
-            (click)="onDeleteItem(item)"
+            (click)="$event.stopImmediatePropagation(); onEditItem(item)"
           >
-            <mat-icon>delete</mat-icon>
+            <mat-icon>edit</mat-icon>
           </button>
         </mat-list-item>
       </mat-list>
