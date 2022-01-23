@@ -22,9 +22,11 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { entityConfig } from './entity-metadata';
 import { EditTagDialogComponent } from './dialogs/edit-tag-dialog/edit-tag-dialog.component';
+import { EditItemDialogComponent } from './dialogs/edit-item-dialog/edit-item-dialog.component';
+import { ShowItemDialogComponent } from './dialogs/show-item-dialog/show-item-dialog.component';
 
 @NgModule({
-  declarations: [AppComponent, EditTagDialogComponent],
+  declarations: [AppComponent, EditTagDialogComponent, EditItemDialogComponent, ShowItemDialogComponent],
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,

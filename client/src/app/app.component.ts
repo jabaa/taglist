@@ -1,7 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { combineLatest, map, startWith, Subject } from 'rxjs';
-import { EditTagDialogComponent } from './dialogs/edit-tag-dialog/edit-tag-dialog.component';
+import {
+  EditItemDialogComponent,
+  EditItemDialogResult
+} from './dialogs/edit-item-dialog/edit-item-dialog.component';
+import {
+  EditTagDialogComponent,
+  EditTagDialogResult
+} from './dialogs/edit-tag-dialog/edit-tag-dialog.component';
+import { ShowItemDialogComponent } from './dialogs/show-item-dialog/show-item-dialog.component';
 import { Item } from './item';
 import { ItemService } from './item.service';
 import { Tag } from './tag';
@@ -27,12 +35,20 @@ export class AppComponent implements OnInit {
   newItem = '';
   items$ = combineLatest([
     this.itemService.entities$,
+    this.tagService.entityMap$,
     this.itemFilter$.pipe(startWith([]))
   ]).pipe(
-    map(([items, tags]) =>
-      items.filter((item) =>
-        tags.every((tag) => item.tags?.map((tag) => tag.id).includes(tag.id))
-      )
+    map(([items, tags, filterTags]) =>
+      items
+        .filter((item) =>
+          filterTags.every((tag) =>
+            item.tags?.map((tag) => tag.id).includes(tag.id)
+          )
+        )
+        .map((item) => ({
+          ...item,
+          tags: item.tags.map((tag) => tags[tag.id]) as Tag[]
+        }))
     )
   );
 
@@ -85,14 +101,38 @@ export class AppComponent implements OnInit {
       .subscribe(() => (this.newItem = ''));
   }
 
+  onShowItem(item: Item): void {
+    this.dialogService.open(ShowItemDialogComponent, {
+      data: item
+    });
+  }
+
+  onEditItem(item: Item): void {
+    this.dialogService
+      .open(EditItemDialogComponent, {
+        data: item
+      })
+      .afterClosed()
+      .subscribe((result?: EditItemDialogResult) => {
+        switch (result?.action) {
+          case 'delete':
+            this.itemService.delete(result.item.id);
+            break;
+          case 'save':
+            this.itemService.update(result.item);
+            break;
+        }
+      });
+  }
+
   onEditTag(tag: Tag): void {
     this.dialogService
       .open(EditTagDialogComponent, {
         data: tag
       })
       .afterClosed()
-      .subscribe((result) => {
-        switch (result.action) {
+      .subscribe((result?: EditTagDialogResult) => {
+        switch (result?.action) {
           case 'delete':
             this.tagService.delete(result.tag.id);
             this.activeTagsById[result.tag.id] = false;
